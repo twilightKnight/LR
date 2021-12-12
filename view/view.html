@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+<script type="text/javascript" src="/eel.js"></script>
+<head>
+    <meta charset="UTF-16">
+    <title>LR23 Application</title>
+    <style>
+        body{
+            background-color: #EDE0D4;
+            }
+        #main_window{
+            margin: 5% 15%;
+            padding: 5%;
+            background-color: #E6CCB2;
+            }
+        #Results{
+            background-color:  #EDE0D4!important;
+            }
+        input:not(:placeholder-shown) {
+            background-color:  #EDE0D4!important;
+            }
+        .btn{
+            background-color: #DDB892;
+            border-color: #DDB892;
+            }
+        .btn:hover{
+            background-color: #B08968;
+            border-color: #B08968;
+            }
+        #label{
+            white-space: pre-line;
+            }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="row justify-content-center" id="main_window">
+        <div class="col-6" id="column1">
+
+            <br>
+
+            <div class="mb-3">
+                <label for="message" class="form-label">Введите передаваемое сообщение</label>
+                <input class="form-control" id="message" type="text" required>
+            </div>
+
+            <br>
+
+            <button type="submit" class="btn btn-primary" onclick="send_message()">Отправить</button>
+        </div>
+
+        <div class="col-6" id="column2">
+            <br>
+            <div class="mb-3">
+                <label for="Results" class="form-label">Полученные пакеты</label>
+                <textarea class="form-control" id="Results" readonly rows="6"></textarea>
+            </div>
+            <br>
+        </div>
+
+    </div>
+</div>
+</body>
+<script>
+    window.onload = async function(){
+        await eel.server_daemon()();
+        server_updater();
+    }
+
+    async function server_updater(){
+        response = await eel.queue_poper()();
+        document.getElementById('Results').value += response;
+        setTimeout(server_updater, 200);
+    }
+
+    function send_message(){
+        message = document.getElementById('message').value;
+        eel.client_thread(message)();
+    }
+
+</script>
+</html>
